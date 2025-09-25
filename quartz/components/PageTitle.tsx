@@ -19,6 +19,15 @@ PageTitle.css = `
   margin: 0;
   font-family: var(--titleFont);
 }
+
+.page-title a {
+  color: var(--dark) !important;
+  text-decoration: none;
+}
+
+.page-title a:hover {
+  color: var(--darkgray) !important;
+}
 `
 
 export default (() => PageTitle) satisfies QuartzComponentConstructor

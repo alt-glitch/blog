@@ -8,47 +8,47 @@ import * as Plugin from "./quartz/plugins"
  */
 const config: QuartzConfig = {
   configuration: {
-    pageTitle: "Quartz 4",
-    pageTitleSuffix: "",
+    pageTitle: "computing insecurities",
+    pageTitleSuffix: " | sidbin",
     enableSPA: true,
     enablePopovers: true,
     analytics: {
       provider: "plausible",
     },
     locale: "en-US",
-    baseUrl: "quartz.jzhao.xyz",
+    baseUrl: "sidb.in",
     ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "modified",
     theme: {
-      fontOrigin: "googleFonts",
-      cdnCaching: true,
+      fontOrigin: "local",
+      cdnCaching: false,
       typography: {
-        header: "Schibsted Grotesk",
-        body: "Source Sans Pro",
-        code: "IBM Plex Mono",
+        header: "SF Pro Display",  // Will fallback to system fonts
+        body: "SF Pro Text",       // Will fallback to system fonts
+        code: "SF Mono",           // Will fallback to system monospace
       },
       colors: {
         lightMode: {
-          light: "#faf8f8",
-          lightgray: "#e5e5e5",
-          gray: "#b8b8b8",
-          darkgray: "#4e4e4e",
-          dark: "#2b2b2b",
-          secondary: "#284b63",
-          tertiary: "#84a59d",
-          highlight: "rgba(143, 159, 169, 0.15)",
-          textHighlight: "#fff23688",
+          light: "#fafafa",        // soft warm white (easier on eyes)
+          lightgray: "#f1f1f1",    // warm light gray
+          gray: "#737373",         // balanced gray
+          darkgray: "#404040",     // readable dark gray
+          dark: "#1a1a1a",         // soft black (not pure black)
+          secondary: "#0066cc",    // refined blue
+          tertiary: "#666666",     // balanced accent
+          highlight: "rgba(0, 102, 204, 0.08)", // subtle blue highlight
+          textHighlight: "#fff2cc88", // warm yellow highlight
         },
         darkMode: {
-          light: "#161618",
-          lightgray: "#393639",
-          gray: "#646464",
-          darkgray: "#d4d4d4",
-          dark: "#ebebec",
-          secondary: "#7b97aa",
-          tertiary: "#84a59d",
-          highlight: "rgba(143, 159, 169, 0.15)",
-          textHighlight: "#b3aa0288",
+          light: "#181818",        // true dark (not black - easier on eyes)
+          lightgray: "#252525",    // subtle dark gray
+          gray: "#707070",         // balanced medium gray
+          darkgray: "#b8b8b8",     // readable light gray
+          dark: "#e8e8e8",         // soft white (not pure white)
+          secondary: "#4f9eff",    // bright readable blue
+          tertiary: "#888888",     // muted gray accent
+          highlight: "rgba(79, 158, 255, 0.12)", // gentle blue highlight
+          textHighlight: "#ffd54f66", // warm amber highlight
         },
       },
     },
@@ -89,7 +89,6 @@ const config: QuartzConfig = {
       Plugin.Favicon(),
       Plugin.NotFoundPage(),
       // Comment out CustomOgImages to speed up build time
-      Plugin.CustomOgImages(),
     ],
   },
 }

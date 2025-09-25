@@ -1,0 +1,133 @@
+.stacked-notes {
+  margin: 2rem 0;
+
+  h2 {
+    margin-bottom: 1.5rem;
+    color: var(--dark);
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  .posts-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .post-entry {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--lightgray);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    gap: 1rem;
+
+    @media (max-width: 600px) {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+
+  .post-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.4;
+    flex: 1;
+
+    a {
+      color: var(--dark);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      background: none !important;
+      transition: all 0.2s ease;
+
+      &:hover {
+        color: var(--secondary);
+        border-bottom-color: var(--secondary);
+        background: none !important;
+      }
+    }
+  }
+
+  .post-date {
+    color: var(--gray);
+    font-size: 0.9rem;
+    font-weight: 400;
+    white-space: nowrap;
+    margin-top: 0.125rem;
+
+    @media (max-width: 600px) {
+      margin-top: 0;
+    }
+  }
+
+  .post-description {
+    color: var(--darkgray);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0.75rem 0;
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .tag-link {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    background: var(--highlight);
+    color: var(--secondary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--secondary);
+      color: var(--light);
+    }
+  }
+}
+
+// Dark mode adjustments
+@media (prefers-color-scheme: dark) {
+  .stacked-notes {
+    .post-entry {
+      border-bottom-color: var(--lightgray);
+    }
+
+    .post-title a {
+      color: var(--dark);
+    }
+
+    .post-date {
+      color: var(--gray);
+    }
+
+    .post-description {
+      color: var(--darkgray);
+    }
+
+    .tag-link {
+      background: var(--highlight);
+      color: var(--secondary);
+
+      &:hover {
+        background: var(--secondary);
+        color: var(--light);
+      }
+    }
+  }
+}
