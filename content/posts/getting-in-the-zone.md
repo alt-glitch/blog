@@ -1,8 +1,7 @@
 ---
 title: how to get in the zone
 description: or how to push through brain fog and achieve flow state
-date created: 2024-09-26
-date modified: 2023-09-26
+created: 2024-09-26
 tags:
   - productivity
   - flow-state

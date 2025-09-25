@@ -1,6 +1,6 @@
 ---
 title: using gpt-4o and claude to help go thru 500 entries in a form
-date created: 2024-08-01
+created: 2024-08-01
 ---
 
 # background

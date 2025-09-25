@@ -1,6 +1,6 @@
 ---
 title: brain snapshot
-date created: 2024-06-28
+created: 2024-06-28
 ---
 
 (written in my google keep on june 28th as my flight was landing)

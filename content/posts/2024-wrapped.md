@@ -1,7 +1,7 @@
 ---
 title: review of twenty twenty-four
 link: twenty-twenty-four-wrapped
-date created: 2024-12-12
+created: 2024-12-12
 ---
 
 ## why?

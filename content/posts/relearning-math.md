@@ -1,6 +1,6 @@
 ---
 title: why & how i'm relearning maths
-date created: 2024-07-01
+created: 2024-07-01
 ---
 
 maths is at the foundation of so many things that interest me. it's also a great exercise for the mind, and my brain feels like it hasn't hit the gym in a while.

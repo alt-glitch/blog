@@ -1,6 +1,6 @@
 ---
 title: beginner's guide to bangalore
-date created: 2024-12-11
+created: 2024-12-11
 description: how to move here, how to survive
 ---
 
