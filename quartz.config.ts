@@ -13,7 +13,8 @@ const config: QuartzConfig = {
     enableSPA: true,
     enablePopovers: true,
     analytics: {
-      provider: "plausible",
+      provider: "posthog",
+      apiKey: "phc_Ivb4ZkbaHQjj4Xv5YWYzsoTiKFzcJ4c1cJqtX79dfpH",
     },
     locale: "en-US",
     baseUrl: "sidb.in",
