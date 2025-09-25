@@ -27,6 +27,11 @@ const config: QuartzConfig = {
         body: "SF Pro Text",       // Will fallback to system fonts
         code: "SF Mono",           // Will fallback to system monospace
       },
+      ogTypography: {
+        header: "Source Sans Pro", // Google Font for OG images
+        body: "Source Sans Pro",   // Google Font for OG images
+        code: "JetBrains Mono",    // Google Font for OG images
+      },
       colors: {
         lightMode: {
           light: "#fafafa",        // soft warm white (easier on eyes)
@@ -76,7 +81,7 @@ const config: QuartzConfig = {
     filters: [Plugin.RemoveDrafts()],
     emitters: [
       Plugin.AliasRedirects(),
-      Plugin.ComponentResources(),
+    Plugin.ComponentResources(),
       Plugin.ContentPage(),
       Plugin.FolderPage(),
       Plugin.TagPage(),
@@ -89,6 +94,7 @@ const config: QuartzConfig = {
       Plugin.Favicon(),
       Plugin.NotFoundPage(),
       // Comment out CustomOgImages to speed up build time
+      Plugin.CustomOgImages()
     ],
   },
 }

@@ -1,5 +1,5 @@
 ---
-title: 👋 Welcome
+title: '[82, 3619, 71, 7087, 5008, 10134, 885, 4109]'
 aliases:
   - "contact"
   - "about"

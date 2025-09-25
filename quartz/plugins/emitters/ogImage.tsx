@@ -12,6 +12,7 @@ import { BuildCtx } from "../../util/ctx"
 import { QuartzPluginData } from "../vfile"
 import fs from "node:fs/promises"
 import { styleText } from "util"
+import { GlobalConfiguration } from "../../cfg"
 
 const defaultOptions: SocialImageOptions = {
   colorScheme: "lightMode",
@@ -101,6 +102,17 @@ async function processOgImage(
 }
 
 export const CustomOgImagesEmitterName = "CustomOgImages"
+
+// Helper function to get the appropriate typography for OG images
+function getOgTypography(cfg: GlobalConfiguration) {
+  // Use ogTypography if available, otherwise fall back to regular typography
+  const typography = cfg.theme.ogTypography || cfg.theme.typography
+  return {
+    headerFont: typography.header,
+    bodyFont: typography.body
+  }
+}
+
 export const CustomOgImages: QuartzEmitterPlugin<Partial<SocialImageOptions>> = (userOpts) => {
   const fullOptions = { ...defaultOptions, ...userOpts }
 
@@ -111,8 +123,7 @@ export const CustomOgImages: QuartzEmitterPlugin<Partial<SocialImageOptions>> = 
     },
     async *emit(ctx, content, _resources) {
       const cfg = ctx.cfg.configuration
-      const headerFont = cfg.theme.typography.header
-      const bodyFont = cfg.theme.typography.body
+      const { headerFont, bodyFont } = getOgTypography(cfg)
       const fonts = await getSatoriFonts(headerFont, bodyFont)
 
       for (const [_tree, vfile] of content) {
@@ -122,8 +133,7 @@ export const CustomOgImages: QuartzEmitterPlugin<Partial<SocialImageOptions>> = 
     },
     async *partialEmit(ctx, _content, _resources, changeEvents) {
       const cfg = ctx.cfg.configuration
-      const headerFont = cfg.theme.typography.header
-      const bodyFont = cfg.theme.typography.body
+      const { headerFont, bodyFont } = getOgTypography(cfg)
       const fonts = await getSatoriFonts(headerFont, bodyFont)
 
       // find all slugs that changed or were added

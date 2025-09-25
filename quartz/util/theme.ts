@@ -30,6 +30,12 @@ export interface Theme {
     body: FontSpecification
     code: FontSpecification
   }
+  ogTypography?: {
+    title?: FontSpecification
+    header: FontSpecification
+    body: FontSpecification
+    code: FontSpecification
+  }
   cdnCaching: boolean
   colors: Colors
   fontOrigin: "googleFonts" | "local"
