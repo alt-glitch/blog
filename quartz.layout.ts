@@ -14,7 +14,7 @@ export const sharedPageComponents: SharedLayout = {
   footer: Component.Footer({
     links: {
       GitHub: "https://github.com/alt-glitch",
-      X: "https://x.com.sidbing",
+      X: "https://x.com/sidbing",
     },
   }),
 }
