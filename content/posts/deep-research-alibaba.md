@@ -8,7 +8,7 @@ tags:
 ---
 I've been reading up a bit on RL environments recently. While looking to adapt some research papers, benchmarks and evaluations into prime intellect's [environment hub](https://app.primeintellect.ai/dashboard/environments), I came across a bunch of interesting work around deep research, a paradigm where LLM based agents perform complex multi-step research to answer very difficult questions.
 
-You might know this to be the feature in ChatGPT that let's you find out how a particular genre is evolving with the change in peope's music taste by asking it to read 19 research papers.
+You might know this to be the feature in ChatGPT that let's you find out how a particular genre is evolving with the change in people's music taste by asking it to read 19 research papers.
 
 ![[SCR-20251005-qilq-2.png]]
 While ChatGPT Deep Research was launched in February 2025, I first encountered this set of problem in the GAIA benchmark released in 2023 which created 450 easy to validate but hard to solve problems for "general purpose agents". These tasks were all web-based and required complex web search, summarisation, good tool calling to be solved.
