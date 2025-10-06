@@ -18,7 +18,7 @@ Much has happened since then, and while reading up on interesting RL environment
 
 This blog post is a sequential log of my traversal down the rabbit hole of frontier open-source deep research models, mostly centered around Alibaba's DeepResearch *research* work because man do they ship **fast**.
 
-## WebSailor
+## [WebSailor](https://github.com/Alibaba-NLP/DeepResearch/tree/main/WebAgent/WebSailor)
 This paper mostly highlights a data synthesis and training pipeline for deep research LLM agents.
 
 They break down information seeking tasks into three levels:
@@ -80,12 +80,10 @@ $$
 
 However they haven't released their dataset which makes it quite hard to reconstruct it as an RL environment for existing hubs.
 
-## WebSailor V2
+## [WebSailor V2](https://github.com/Alibaba-NLP/DeepResearch/tree/main/WebAgent/WebSailor-V2)
 Alibaba *ships fast*.
 
-Just two months after WebSailor, they release WebSailorV2 building up on the previous paper.
-
-- They focus on sticking to the simple ReAct paradigm since they want to maximise performance through model training since one can always optimise the harness, tools and prompts later on. Doing it during training might take away from enhancing the core capabilities, reasoning and agenticness of the model. Very "The Bitter Lesson"-pilled of them.
+Just two months after WebSailor, they release WebSailorV2 building up on the previous paper. They focus on sticking to the simple ReAct paradigm since they want to maximise performance through model training since one can always optimise the harness, tools and prompts later on. Doing it during training might take away from enhancing the core capabilities, reasoning and agenticness of the model. Very "The Bitter Lesson"-pilled of them.
 
 The tools available to the model are expanded to the following:
 1. Search
@@ -105,16 +103,14 @@ There is mention of an "automated, closed loop, data policy" that synthesizes an
 
 ---
 
-## WebShaper
+## [WebShaper](https://github.com/Alibaba-NLP/DeepResearch/tree/main/WebAgent/WebShaper)
 
 WebShaper seems to be the most obvious research that can be adapted as an RL environment to add since they detail the dataset, reward rubric, eval set as well as the prompt and tools.
 
 While this paper talks about using knowledge projects and set theory to create the dataset, I was more interested in the training methodology adapting it as an RL environment.
 
-They deploy two agents 
 The agent trained on the dataset is equipped with two runtime tools:
 - **Search:** Google queries (several in parallel), returning top‑10 results per query with title, snippet, and URL.
 - **Visit:** Fetches full page content (via Jina) and produces a goal‑conditioned summary (their implementation uses a large model, e.g., Qwen‑2.5‑72B, to extract information relevant to the specified goal).
 
 For evaluations, they use LLM-as-a-judge to evaluate the performance of the trained agent on the given QA. This is a valid rubric that can be used during training.
-
