@@ -18,6 +18,11 @@ RL environments, LLM evals, Building an agent product for fintech startup.
 - Worked on the platform, API and documentation. Rebuilt and re-wrote the entire documentation (twice) while I was there :P
 - Initially I started with trying to improve tools and tool quality for LLMs. Ran evals (BFCL etc) and optimised the automated pipeline to write better tool schemas.
 
+## Lossfunk / LogQL Paper
+- Wrote a [paper](https://arxiv.org/abs/2412.03612) with [Vishwanath](https://x.com/__vishwanath__) on fine-tuning LLMs for observability and log query languages.
+- Spoke about it at HasGeek RootConf 2024. [Talk here](https://hasgeek.com/rootconf/2024/sub/chatting-with-logs-an-exploratory-study-on-finetun-JpwTwPCfm2aXpzs3zzYPok)
+- Also did this while I was brushing up on math during [Lossfunk ](https://x.com/sidbing/status/1855504617284551098)-- an AI residency out in Bangalore.
+
 ## [Julep](https://julep.ai/): [https://github.com/julep-ai/julep](https://git.new/julep)
 
 - [Worked on the repo](https://github.com/julep-ai/julep/commits?author=alt-glitch). I once screwed up the git history while cleaning it lol. Actually contributing to a work-in-progress but well-designed architecture was eye-opening.
