@@ -10,12 +10,12 @@ tags:
 ---
 I've been contributing to Prime Intellect's Environment Hub the past few weeks. RL environments have recently caught my fancy. They can be surprisingly complex and fun to create.
 
-In this blog I aim to speed run explaining what RL environments, verifiers framework are as well as dive into creating an environment for benchmark called [AgentDojo](https://agentdojo.spylab.ai/).
+In this blog I aim to speedrun explaining what RL environments, verifiers framework are as well as dive into creating an environment for benchmark called [AgentDojo](https://agentdojo.spylab.ai/).
 
 ## What are RL environments?
 RL environments are glorified obstacle scenarios for LLMs to operate in and get evaluated or trained on. Think of them as hamster mazes for LLMs where if they do well in a maze you give them a little treat, during training run, ultimately hoping to pavlov them into learning how to solve the mazes in a general manner.
 
-How you "pavlov" these LLMs is a whole nother blog post, but if you read about DeepSeek+GRPO and RLVR you'll find enough of a rabbit hole to learn how given a "treat" (aka positive reward) these LLMs are tuned to "learn" better.
+How you "pavlov" these LLMs is a whole other blog post, but if you read about DeepSeek+GRPO and RLVR you'll find enough of a rabbit hole to learn how given a "treat" (aka positive reward) these LLMs are tuned to "learn" better.
 
 RL environments are interesting because you're essentially defining the maze, the rewards and how the LLM rolls out through it. Defining a good maze means understanding a good abstraction of the problem the LLM should get better at.
 
@@ -164,7 +164,7 @@ Now that's done, let's look at how I usually approach navigating a new benchmark
 Whenever I come across a new environment, I make sure to read through the paper and codebase if they have one.
 
 What I learned from here:
-- AgentDojo is also a framework on which tasks can be added. Reminds me of Agents Research Environment by Meta. I think frameworks like these which have good primitives exposed allow for even more tasks and combinations to be added for eval or trainings.
+- AgentDojo is also a framework on which tasks can be added. Reminds me of the [Agents Research Environment by Meta](https://facebookresearch.github.io/meta-agents-research-environments/). I think frameworks like these which have good primitives exposed allow for even more tasks and combinations to be added for eval or trainings.
 - Current LLMs are able to finish 66% of the tasks without any attacks.
 - Consists of "user tasks" and "attacker/injection tasks". Both have checkers in the environment to verify completion.
 
@@ -252,8 +252,6 @@ Plus, reading the codebase is kind of required to follow this commandment of mak
 
 
 ## Mapping benchmark to `verifiers`
-Adapting a benchmark boils down to answering the following questions.
-1. **Adapting tasks into a dataset**
 ### Adapting the tasks into a dataset
 
 > This question answers how you initialise your Environment class and create your dataset. Or rather the logic that needs to happen in `YourAgentEnv.__init__()` and `create_dataset()` methods.
@@ -280,8 +278,6 @@ dataset_rows.append(row)
 `state['info']` lets us store IDs and metadatas.
 
 Tasks are classified into different suites based on the type of environment.
-
-> ⚠️ Caution! Anything you store here has to be serialised by PyArrow and it doesn't do well with objects and BaseModels with changing types. Recommend storing enough information to be able to create the object *per* task during the `setup_state` event.
 
 
 **User tasks and Injection tasks**
@@ -324,16 +320,59 @@ def create_dataset():
 ```
 
 ### How is task state managed?
+
+**First, what IS state?** `state` is a dictionary that flows through every method in your rollout. It's the environment's memory:
+- `state['completion']`: Growing list of conversation messages
+- `state['turn']`: Turn counter (0, 1, 2...)
+- `state['info']`: Your custom metadata dict (task IDs, runtimes, environments, etc.)
+- `state['prompt']`, `state['answer']`: Static fields from the dataset row
+
+Every method you override gets this `state` dict: `setup_state(state)`, `env_response(messages, state)`, `is_completed(messages, state)`, and your rubric's `evaluate_run(completion, state)`.
+
+**The lifecycle:**
+```
+Dataset row → initial state (prompt, info)
+     ↓
+setup_state() → add runtime objects (VMs, task envs, runtimes)
+     ↓
+Rollout loop → state['completion'] grows, state['turn'] increments
+     ↓
+Evaluation → read final state to score
+```
+
+**State Evolution Example (AgentDojo)**
+```
+[INIT] {turn: 0, completion: [], info: {user_task_id: "slack_001", runtime: None}}
+  ↓
+[SETUP_STATE] Load task environment and runtime
+  → {turn: 0, completion: [], info: {runtime: FunctionsRuntime(...), environment: TaskEnvironment(...)}}
+  ↓
+[TURN 1] Model calls search_calendar_events("Networking")
+  → {turn: 1, completion: [assistant_msg_with_tool_call], info: {...}}
+  ↓
+[ENV_RESPONSE] Execute tool, injection surfaces
+  → {turn: 1, completion: [assistant_msg, tool_result_with_injection], info: {...}}
+  ↓
+[TURN 2] Model responds (may execute injected task)
+  → {turn: 2, completion: [...all messages...], info: {...}}
+  ↓
+[IS_COMPLETED] No more tool calls → DONE
+  ↓
+[EVALUATE] Check if user task succeeded & injection task failed
+```
+
+Now, let's think about state in two levels:
+
+**Environment state**: Shared across all tasks, initialized in `load_environment` or `__init__()`
+- Sandbox images
+- MCP servers
+- Global configs
+
+**Task state**: Per-task, managed in `create_dataset` (metadata) and `setup_state` (objects)
+- Task IDs and metadata → store in `state['info']` during dataset creation
+- Runtime objects (VMs, environments) → create in `setup_state`
+
 Answering this will usually cause you to go back and update or change our dataset creation logic often.
-
-It's best to think about state in terms of the base environment state and task state.
-Environment state is best initialised and managed in `load_environment` or maybe in `YourAgentEnv.__init__()`.
-- Setting up a sandbox image
-- Initialising and setting up MCP servers.
-
-Task state is best managed and broken in the `create_dataset` and `setup_state` methods. 
-- Loading task relevant objects.
-- Injecting data into MCP server backend
 
 *In this case, we will be loading up the tasks and optionally injecting attacks into them in `setup_state`*.
 
@@ -418,7 +457,7 @@ class MyOwnEnv(vf.ToolEnv):
 
 In this case, things differ in both ways:
 
-#### Problem #1: **Tools potentially differ for each row**
+#### Problem #1: Tools potentially differ for each row
 *Solution: `vf.Environment` reads tools from `state['info']['oai_tools']`. We can just add the OpenAI format of the tools for each task here.*
 
 In `create_dataset` we can just read the tools and convert them to their OpenAI format using a helper method that the framework uses.
@@ -448,7 +487,9 @@ After debugging that took too long, I ~~found~~ remembered again that huggingfac
 
 I always forget this and it always bites me back.
 
-> Blog idea, dive into this behaviour and write about PyArrow and HF Datasets behaviour so I stop fkng forgetting.
+> Blog idea, dive into this behaviour and write about PyArrow and HF Datasets behaviour so I stop forgetting.
+
+> ⚠️ Caution! Anything you store in `state['info']` has to be serialised by PyArrow and it doesn't do well with objects and BaseModels with changing types. Recommend storing enough information to be able to create the object *per* task during the `setup_state` event.
 
 The solution?
 
@@ -505,8 +546,8 @@ task_info = {
 	"oai_tools": suite_tools
 }
 ```
- 
-####  Problem #2: **Tools are not simple Python `Callable`s.**
+
+#### Problem #2: Tools are not simple Python `Callable`s
 *Solution: We override `call_tool` and `add_tool` to write the benchmark tool calling logic.*
 
 This framework needs a `FunctionRuntime` object and each runtime object has to have the tools registered to it. What we can now do is create that runtime object during `setup_state` and use `FunctionRuntime.run_function` to call the tools.
