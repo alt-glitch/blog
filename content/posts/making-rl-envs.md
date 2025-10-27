@@ -23,7 +23,7 @@ RL environments are interesting because you're essentially defining the maze, th
 
 
 
-![[Pasted image 20251026115225.png]]
+![[Pasted image 20251026115225.png | 500]]
 > Hamster meme signifying the end of the hamster analogy.
 
 ---
@@ -33,7 +33,7 @@ RL environments are interesting because you're essentially defining the maze, th
 
 This is great because everyone ends up writing/re-writing their own harnesses for LLMs which becomes a huge pain when trying to run many of them together to train or evaluate on.
 
-![[Pasted image 20251027123815.png]]
+![[Pasted image 20251027123815.png | 500]]
 
 Will Brown was [immortalized](https://x.com/kalomaze/status/1981903818066673973/photo/1) into a wojack (willjack) for his significant contribution to the ML community for making this framework.
 
@@ -252,6 +252,143 @@ Plus, reading the codebase is kind of required to follow this commandment of mak
 
 
 ## Mapping benchmark to `verifiers`
+For any environment you write, the following lifecycle should cover most of the methods or steps to implement and hooks to call in the lifecycle.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         ENVIRONMENT LIFECYCLE                           │
+└─────────────────────────────────────────────────────────────────────────┘
+
+                              SETUP PHASE
+                              ───────────
+
+    ┌──────────────────────────────────────────────────┐
+    │ create_dataset()                                 │
+    │ • Build HF Dataset rows                          │
+    │ • Set initial prompts                            │
+    │ • Initialize state['info'] metadata              │
+    └───────────────────┬──────────────────────────────┘
+                        │
+                        ▼
+    ┌──────────────────────────────────────────────────┐
+    │ YourEnv.__init__()                               │
+    │ • Setup global resources (all tasks)             │
+    │ • Initialize tool mappings                       │
+    │ • Configure environment settings                 │
+    └───────────────────┬──────────────────────────────┘
+                        │
+                        ▼
+    ┌──────────────────────────────────────────────────┐
+    │ load_environment()                               │
+    │ • Wire up dataset + rubric + env                 │
+    │ • Return configured environment                  │
+    └───────────────────┬──────────────────────────────┘
+                        │
+                        ▼
+    ┌──────────────────────────────────────────────────┐
+    │ ROLLOUT STARTS                                   │
+    │ (For each task in dataset)                       │
+    └───────────────────┬──────────────────────────────┘
+                        │
+                        ▼
+
+                           PER-TASK PHASE
+                           ──────────────
+
+    ┌──────────────────────────────────────────────────┐
+    │ vf.Environment.init_state()                      │
+    │ • Create base state dict                         │
+    │ • {prompt, completion:[], turn:0, ...}           │
+    └───────────────────┬──────────────────────────────┘
+                        │
+                        ▼
+    ┌──────────────────────────────────────────────────┐
+    │ YourEnv.setup_state(state)                  │
+    │ • Setup per-task resources                       │
+    │ • Initialize sandboxes, VMs, game envs           │
+    │ • Inject attacks, load task-specific objects     │
+    │ • state['sandbox_id'] = ...                      │
+    │ • state['info']['runtime'] = ...                 │
+    └───────────────────┬──────────────────────────────┘
+                        │
+                        ▼
+
+				  CONVERSATION LOOP
+				  ─────────────────
+
+    ┌──────────────────────────────────────────────────┐
+    │ YourEnv.is_completed(messages, state)?           │
+    │ • Check turn >= max_turns                        │
+    │ • Check custom completion logic                  │
+    └─────┬────────────────────────────────────────┬───┘
+          │                                        │
+     ┌────▼─────┐                              ┌───▼────┐
+     │   TRUE   │                              │ FALSE  │
+     └────┬─────┘                              └───┬────┘
+          │                                        │
+          │                                        ▼
+          │                    ┌──────────────────────────────────────┐
+          │                    │ LLM Call (API)                       │
+          │                    │ • Send context_messages              │
+          │                    │ • Get model response                 │
+          │                    │ • state['responses'].append(response)│
+          │                    │ • state['completion'].append(msg)    │
+          │                    │ • state['turn'] += 1                 │
+          │                    └──────────────┬───────────────────────┘
+          │                                   │
+          │                                   ▼
+          │                    ┌──────────────────────────────────────┐
+          │                    │ is_completed(messages, state)?       │
+          │                    │ (check again after model response)   │
+          │                    └──┬────────────────────────────────┬──┘
+          │                       │                                │
+          │                  ┌────▼─────┐                      ┌───▼────┐
+          │                  │   TRUE   │                      │ FALSE  │
+          │                  └────┬─────┘                      └───┬────┘
+          │                       │                                │
+          │                       │                                ▼
+          │                       │            ┌──────────────────────────────────┐
+          │                       │            │ YourEnv.env_response(messages, state)│
+          │                       │            │ • Process model output           │
+          │                       │            │ • If tool_calls exist:           │
+          │                       │            │   ├─> call_tool(name, args, ...) │
+          │                       │            │   └─> Build tool result messages │
+          │                       │            │ • Update state (counters, flags) │
+          │                       │            │ • Return (tool_msgs, state)      │
+          │                       │            └────────┬─────────────────────────┘
+          │                       │                     │
+          │                       │                     │ state['completion'] += tool_msgs
+          │                       │                     │
+          │                       │                     ▼
+          │                       │            ┌────────────────────┐
+          │                       │            │ Loop back to       │
+          │                       │            │ is_completed check │
+          │                       │            └────────┬───────────┘
+          │                       │                     │
+          │                       │                     │
+          ▼                       ▼                     │
+    ┌─────────────────────────────────────────────────┐ │
+    │ ROLLOUT COMPLETE                                │ │
+    │ • Final state returned                          │ │
+    │ • completion = full conversation history        │ │
+    └───────────────────┬─────────────────────────────┘ │
+                        │◀─────────────────────────────-┘
+                        ▼
+
+                        EVALUATION PHASE
+                        ────────────────
+
+    ┌──────────────────────────────────────────────────┐
+    │ rubric.score(completion, state)                  │
+    │ • Run evaluation functions                       │
+    │ • Calculate rewards based on:                    │
+    │   - Final completion messages                    │
+    │   - state['info'] metadata                       │
+    │   - state['answer'] (ground truth)               │
+    │ • Return reward score (e.g., 0.0 to 1.0)         │
+    └──────────────────────────────────────────────────┘
+```
+
 ### Adapting the tasks into a dataset
 
 > This question answers how you initialise your Environment class and create your dataset. Or rather the logic that needs to happen in `YourAgentEnv.__init__()` and `create_dataset()` methods.
@@ -638,14 +775,43 @@ uv run vf-eval agent_dojo \
 ```
 
 
-## Fin.
-It's helpful to read different RL environments to better understand what other tradeoffs are possible.
+## Fin. + some thoughts
+As someone getting into RL + environments, these are some of my intuitions:
 
-Here are some others I've worked on:
-- [MCP Universe](https://github.com/PrimeIntellect-ai/prime-environments/pull/181#issue-3439679724)
-- [AndroidWorld](https://github.com/PrimeIntellect-ai/prime-environments/pull/248)
 
-Verifiers itself ships with some environments you can read to understand the primitives better. [verifiers/environments](https://github.com/PrimeIntellect-ai/verifiers/tree/main/environments)
+**Many evals and benchmarks can be contrived.**
+
+And hence adapting them into RL environments would make them sub-optimal. Don't quote me on this though but I sincerely wonder if most benchmarks are useful environments to train on.
+Barring of course the SWE-Benches and MLE Benches of the lot.
+
+I think this will soon change to environment hubs rewarding for significantly more complex but also baseline environments.
+
+**How would environment stacking look like?**
+
+What if I want to make a group of environments that progressively teaches a task starting from the ground up. Take agent/tooling environments for example. One might end up crafting great rewards for those particular agent and tooling tasks but, what if I want to combine 3 environments that progressively stack up the following skills:
+- Calling tools
+- Calling tools progressively
+- Calling tools progressively for searching through a codebase
+
+If you're reading this and have any ideas, let me know @ x.com/sidbin!
+
+**RL environments are kinda... slow.**
+
+I think RL environments main bottleneck is that training on them would often be too slow. The Prime Intellect training stack is very accessible and ever expanding, however I don't think there is ever a focus on making `env_response` super fast, atleast at the time of it's writing.
+
+One drawback of letting chuds like me contribute to environments is that as long as there is no threshold to limit environment responses, they can end up being really slow.
+
+Why is that a problem? Well, training on these environments at a larger scale would mean your GPU is sitting idle waiting for the environment to respond. This is expensive.
+
+**Sandboxes with KVM support would be great**
+
+While working on [AndroidWorld](https://github.com/PrimeIntellect-ai/prime-environments/pull/248) I discovered that the setup before each rollout and each task is painfully slow. I also had to work around having to setup an Android Virtual Device in `load_environment()`. While this contract is great, if I could have defined sandboxes pre-configured with the tools and Android VM setup for each task suite, it would shave previous seconds off of each rollout.
+
+
+---
+
+It's helpful to read different RL environments to better understand what other tradeoffs are possible. Verifiers itself ships with some environments you can read to understand the primitives better. [verifiers/environments](https://github.com/PrimeIntellect-ai/verifiers/tree/main/environments)
 
 Feel free to reach out to me if you wanna jam on agents, evals and environments @ x.com/sidbing!
 
+~ fin.
