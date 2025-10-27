@@ -2,6 +2,8 @@
 title: review of twenty twenty-four
 link: twenty-twenty-four-wrapped
 created: 2024-12-12
+tags:
+  - wrapped
 ---
 
 ## why?

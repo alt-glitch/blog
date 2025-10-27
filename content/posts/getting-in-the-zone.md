@@ -3,8 +3,7 @@ title: how to get in the zone
 description: or how to push through brain fog and achieve flow state
 created: 2024-09-26
 tags:
-  - productivity
-  - flow-state
+  - ramblings
 ---
 
 i have a very finite set of things i do which help me get into the flow state.

@@ -1,6 +1,8 @@
 ---
 title: brain snapshot
 created: 2024-06-28
+tags:
+  - ramblings
 ---
 
 (written in my google keep on june 28th as my flight was landing)

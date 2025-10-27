@@ -1,20 +1,14 @@
 ---
-title: '[82, 3619, 71, 7087, 5008, 10134, 885, 4109]'
+title: "[82, 3619, 71, 7087, 5008, 10134, 885, 4109]"
 aliases:
-  - "contact"
-  - "about"
 ---
 
-hi!
+Hey!
 
-i'm siddharth. i go by sidbin/g online in most places.
+I'm Siddharth. I go by `sidbin`/`sidbing` in most online spaces.
 
-i'm a tinkerer at heart and trying to go up and down the layers of computer abstraction.
+See [[whoami]] for more on what I'm upto or have been upto :)
 
-i'm studying core maths, cs, and ml for a few months and also building epoch 0, a discord server for ppl to learn together.
+Below is an append only list of blogs.
 
-what keeps me up at night though is my quest to find my **north star**: a difficult problem that i want to spend a lot of time working on.
-
-
-this is my attempt at maintaining a digital garden and my 5th attempt at creating a seamless set up for blogging for myself.
-
+I'm most chronically online and available on [X](https://x.com/sidbing)

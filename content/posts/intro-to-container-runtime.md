@@ -1,6 +1,8 @@
 ---
 title: An attempt to understand container runtime
-tags: rabbit hole, containers, go, security
+tags:
+  - systems
+  - security
 created: 2022-01-16
 description: Demystifying containers with `containerd`
 ---

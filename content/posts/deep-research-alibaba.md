@@ -5,6 +5,7 @@ date created: 2025-10-05
 draft: "false"
 tags:
   - papers
+  - llms
 ---
 I've been reading up a bit on RL environments recently. While looking to adapt some research papers, benchmarks and evaluations into prime intellect's [environment hub](https://app.primeintellect.ai/dashboard/environments), I came across a bunch of interesting work around deep research, a paradigm where LLM based agents perform complex multi-step research to answer very difficult questions.
 

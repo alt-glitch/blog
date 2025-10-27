@@ -1,7 +1,8 @@
 ---
 title: I tracked the 26th Jan Farmer Protests through Snapchat
 created: 2021-01-28
-tags: osint, security
+tags:
+  - security
 ---
 
 ## Introduction

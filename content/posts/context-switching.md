@@ -2,6 +2,8 @@
 title: fuck context switching
 link: fuck-context-switching
 created: 2024-08-27
+tags:
+  - ramblings
 ---
 
 context switching sucks.

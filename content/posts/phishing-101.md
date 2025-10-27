@@ -1,6 +1,7 @@
 ---
 title: The Ultimate Guide to Phishing
-tags: phishing, security
+tags:
+  - security
 created: 2021-08-03
 ---
 

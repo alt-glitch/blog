@@ -1,8 +1,9 @@
 ---
 title: White Paper - Understanding and Exploiting Zerologon
 created: 2021-01-06
-description: "A paper examining the MS-NRPC protocol in detail and walk through how to exploit it."
-tags: security, whitepaper, microsoft
+description: A paper examining the MS-NRPC protocol in detail and walk through how to exploit it.
+tags:
+  - security
 ---
 
 ## Zerologon? What's that?

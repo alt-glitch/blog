@@ -2,6 +2,9 @@
 title: open research questions in LLM and NLP research
 link: open-research-questions
 created: 2024-08-22
+tags:
+  - papers
+  - llms
 ---
 
 i came across this [amazing paper](https://arxiv.org/abs/2305.12544) which discusses research areas and ideas that still need to be worked upon.
