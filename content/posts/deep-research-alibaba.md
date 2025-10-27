@@ -1,7 +1,7 @@
 ---
 title: Looking at Alibaba's progress in Deep Research
 link: deep-research-rl
-date created: 2025-10-05
+created: 2025-10-05
 draft: "false"
 tags:
   - papers
