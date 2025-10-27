@@ -1,5 +1,5 @@
 ---
-title: Making RL Environment Speedrun
+title: Speedrunning an RL environment
 link: rl-env-speedrun
 created: 2025-10-27
 draft: "false"
