@@ -76,9 +76,7 @@ There is a logic to this confusion too.
 - **cri-o** or **containerd** manage the lifecycle of a container starting from execution from an image, supervision, networking and killing the container.
 - Extra - **Docker** (or more precisely `dockerd`) is another abstraction of `containerd`\*. It manages even more things like orchestration, scaling, volumes etc.
 
-{{< figure src="https://i.stack.imgur.com/5aXF6.png" caption="Source: [Stack Overflow](https://stackoverflow.com/questions/41645665/how-containerd-compares-to-runc)">}}
-
-{{< figure src="https://www.tutorialworks.com/assets/images/container-ecosystem.drawio.png" caption="Source: [Tutorialworks](https://www.tutorialworks.com/difference-docker-containerd-runc-crio-oci/)" >}}
+![[Pasted image 20251103143014.png]]
 
 > \*`containerd` was developed by Docker and then donated to CNCF a while back and moreover, Kubernetes is deprecating Docker because using `containerd` directly is more efficient than `dockerd`.
 
